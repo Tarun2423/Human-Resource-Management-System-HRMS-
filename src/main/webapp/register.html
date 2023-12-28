@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="register.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;1,400;1,700&display=swap" rel="stylesheet">
+<script src="https://use.fontawesome.com/3a2eaf6206.js"></script>
+    <title>Add Employee</title>
+  </head>
+  <body>
+   
+      <div id="con" class="container">
+          <div class="ad">
+              <div class="imgContainer">
+                  <img src="reg1.jpg" alt="" class="logimg">
+              </div>
+          </div>
+          <div class="loginContainer">
+              <div class="login">
+                  <div class="title">
+                      <p style="font-weight: 700; color: white; letter-spacing: 1px; font-size: 20px;">Add Employee</p>
+                  </div>
+                  <div class="inp">
+                      <input class="in" type="text" name="name" id="name" placeholder="Username" />
+                      <input class="in" type="email" name="email" id="email" placeholder="Email" />
+                      <input class="in" style="color: white;cursor: pointer;" type="date" name="dob" id="dob" placeholder="Date Of Birth" />
+                      <input class="in" style="margin-bottom: 10px;" type="text" name="password" id="password" placeholder="Password" />
+                      <input class="in" type="text" name="role" id="role" placeholder="Role" />
+                    <form id="avatarForm" onsubmit="event.preventDefault(); register();" action="UpdateAvatar" method="post" enctype="multipart/form-data">
+
+        <input type="file" name="avatar" id="fileInput" >
+    </form>
+                  </div>
+                  <div class="links">
+                      <button class="btn" type="button" onclick="register()">Create</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+    <script>
+   
+function showApiResultModal(message, isSuccess) {
+  return new Promise((resolve) => {
+    if (isSuccess) {
+      Swal.fire({
+        title: "Success",
+        text: message,
+        icon: "success",
+      }).then(() => {
+        resolve(); 
+      });
+    } else {
+      Swal.fire({
+        title: "Failure",
+        text: message,
+        icon: "error",
+      }).then(() => {
+        resolve(); 
+      });
+    }
+  });
+}
+      function redirectToHome(){
+        window.location="/hr/Home.html";
+      }
+     
+      function register() {
+    	  
+        
+    	    var name = document.getElementById("name").value;
+    	    var password = document.getElementById("password").value;
+    	    var email = document.getElementById("email").value;
+    	    var role = document.getElementById("role").value;
+    	    var dob = document.getElementById("dob").value;
+          var fileInput = document.getElementById("fileInput");
+    	    var file = fileInput.files[0];
+          console.log(file)
+    	    var formData = new FormData();
+    	    formData.append('name', name);
+    	    formData.append('email', email);
+    	    formData.append('password', password);
+    	    formData.append('role', role);
+    	    formData.append('dob', dob);
+    	    formData.append('file', file);
+
+    	    var xhttp = new XMLHttpRequest();
+
+    	    xhttp.onreadystatechange = function () {
+    	        if (this.readyState == 4) {
+    	            if (this.status == 200 && this.responseText.trim() == "success") {
+    	                showApiResultModal("Registered Successfully", true);
+    	            } else if (this.status == 200 && this.responseText.trim() == "some error") {
+    	                showApiResultModal("Something went wrong..", false);
+    	            }
+    	        }
+    	    };
+
+    	    xhttp.open("POST", "http://localhost:8080/hr/register", true);
+    	    xhttp.send(formData);
+    	}
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Display</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .profile-container {
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .profile-picture {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+
+    .profile-info {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .value {
+        color: #333;
+    }
+</style>
+
+<body>
+   
+
+   <div class="profile-container">
+   <img id="displayedImage" src="userpic.jpg" alt="Displayed Image" style="width:200px;height:200x;border-radius:50%;object-fit:contain">
+    <div class="profile-info">
+        <p class="label">Name:</p>
+        <p class="value">John Doe</p>
+    </div>
+    <div class="profile-info">
+        <p class="label">Email:</p>
+        <p class="value">john.doe@example.com</p>
+    </div>
+    <div class="profile-info">
+        <p class="label">ID:</p>
+        <p class="value">123456</p>
+    </div>
+    <div class="profile-info">
+        <p class="label">Joining Date:</p>
+        <p class="value">January 1, 2022</p>
+    </div>
+    <div class="profile-info">
+        <p class="label">DOB:</p>
+        <p class="value">January 10, 1990</p>
+    </div>
+    <div class="profile-info">
+        <p class="label">Mobile No:</p>
+        <p class="value">+123 456 7890</p>
+    </div>
+</div>
+   <script>
+       document.addEventListener("DOMContentLoaded", function() {
+           var name = "Thrishal";
+           var xhr = new XMLHttpRequest();
+
+           xhr.responseType = 'arraybuffer';
+
+           xhr.onreadystatechange = function() {
+               if (xhr.readyState == 4) {
+                   if (xhr.status == 200) {
+                       var arrayBuffer = xhr.response;
+                       if (arrayBuffer) {
+                           var byteArray = new Uint8Array(arrayBuffer);
+                           var imageUrl = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, byteArray));
+                           document.getElementById("displayedImage").src = imageUrl;
+                       } else {
+                           console.error("Failed to retrieve image data");
+                       }
+                   } else {
+                       console.error("Failed to retrieve image. Status: " + xhr.status);
+                   }
+               }
+           };
+
+           xhr.open("GET", "http://localhost:8080/hr/getImage?name=" + name, true);
+           xhr.send();
+       });
+   </script>
+</body>
+</html>

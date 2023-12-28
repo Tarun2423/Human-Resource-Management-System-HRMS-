@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin-Page</title>
+    <link rel="stylesheet" href="Home.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+
+    
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      window.addEventListener("load", function () {
+    	
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            window.localStorage.setItem("Employees", this.responseText);
+            var Employees = JSON.parse(this.responseText);
+            console.log(Employees[0]);
+            var tableBody = document
+              .getElementById("btable")
+              .getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = "";
+            for (var i = 0; i < Employees.length; i++) {
+              var row = tableBody.insertRow(i);
+              var cell1 = row.insertCell(0);
+              var cell2 = row.insertCell(1);
+              var cell3 = row.insertCell(2);
+              var cell4 = row.insertCell(3);
+              var cell5 = row.insertCell(4);
+
+              cell1.textContent = Employees[i].EmpId;
+              cell2.textContent = Employees[i].name;
+              cell3.textContent = Employees[i].role;
+              cell4.textContent = Employees[i].Joining;
+              cell5.innerHTML =
+                '<span class="material-symbols-outlined">delete</span>';
+              cell5.style.cursor = "pointer";
+              cell5.style.color="red";
+              cell5.addEventListener("click", function (event) {
+                  var clickedRow = event.target.closest('tr');
+                  var name = clickedRow.cells[1].textContent;
+                  deleteEmployee(name);
+                });
+            }
+          }
+        };
+        xhttp.open("GET", "http://localhost:8080/hr/getEmp", true);
+        xhttp.send();
+        const fromInput = document.getElementById('ename');
+    const fromSuggestionsContainer = document.getElementById('fromESuggestionsContainer');
+if(fromInput.value == ""){fromSuggestionsContainer.style.display = "none";}
+    fromInput.addEventListener('input', () => updateSuggestions(fromInput, fromESuggestionsContainer));
+
+const finput=document.getElementById('fname');
+const tinput=document.getElementById('tname');
+const fromMSuggestionsContainer = document.getElementById('fromMSuggestionsContainer');
+const fromTSuggestionsContainer = document.getElementById('toMSuggestionsContainer');
+if(finput.value==""){fromMSuggestionsContainer.style.display="none";}
+if(tinput.value==""){fromTSuggestionsContainer.style.display="none";}
+finput.addEventListener('input', () => updateSuggestions(finput, fromMSuggestionsContainer));
+tinput.addEventListener('input', () => updateSuggestions(tinput, fromTSuggestionsContainer));
+ function updateSuggestions(inputElement, suggestionsContainer) {
+      const inputValue = inputElement.value.toLowerCase();
+      suggestionsContainer.innerHTML = '';
+		var Employees=JSON.parse(window.localStorage.getItem("Employees"));
+		  if (inputValue === "") {
+		        suggestionsContainer.style.display = 'none';
+		        return;
+		    }
+      const filteredSuggestions = Employees.filter(e =>
+        e.name.toLowerCase().includes(inputValue)       
+      );      
+      filteredSuggestions.forEach(name => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('suggestion-item');
+        suggestionItem.textContent = name.name;
+        suggestionItem.addEventListener('click', () => {
+          inputElement.value = name.name;
+          suggestionsContainer.innerHTML = '';
+        });
+        suggestionsContainer.appendChild(suggestionItem);
+      });
+      suggestionsContainer.style.display = filteredSuggestions.length>0 ? 'block' : 'none';
+    }
+        function approveLeave(name, reason, dates) {
+        	
+        	  updateLeaveStatus(name, reason, dates, "Approved");
+        	}
+
+        	function declineLeave(name, reason, dates) {
+        	
+        	  updateLeaveStatus(name, reason, dates, "Declined");
+        	}
+
+        	function updateLeaveStatus(name, reason, dates, status) {
+        	 
+        	  fetch('http://localhost:8080/hr/updateleavestatus', {
+        	    method: 'POST',
+        	    headers: {
+        	      'Content-Type': 'application/x-www-form-urlencoded',
+        	    },
+        	    body: `name=${name}&reason=${reason}&dates=${dates}&status=${status}&user=Admin`,
+        	  })
+        	    .then(response => response.json())
+        	    .then(data => {
+        	     
+        	      if (data.message) {
+        	        showApiResultModal(data.message, true);
+        	       
+        	      } else {
+        	        showApiResultModal(data.error || 'Failed to update leave status', false);
+        	      }
+        	    })
+        	    .catch(error => {
+        	      console.error('Error:', error);
+        	      showApiResultModal('An error occurred while updating leave status', false);
+        	    });
+        	}
+
+        var xhttp1 = new XMLHttpRequest();
+        xhttp1.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var Leave= JSON.parse(this.responseText);
+            console.log("Leave",Leave);
+            var e=0;
+            var tableBody = document
+              .getElementById("Leavetable")
+              .getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = "";
+            for (var i = 0; i < Leave.length; i++) {
+            	if(Leave[i].status){
+            		console.log("inn",Leave[i].status);}
+            	else{
+            		console.log("out",Leave[i].status);
+              var row = tableBody.insertRow(e);
+              var cell1 = row.insertCell(0);
+              var cell2 = row.insertCell(1);
+              var cell3 = row.insertCell(2);
+              var cell4 = row.insertCell(3);
+              var cell5 = row.insertCell(4);
+				      e+=1;
+              cell1.textContent = Leave[i].name;
+              cell2.textContent = Leave[i].reason;
+              cell3.textContent = Leave[i].dates;
+              cell4.innerHTML = '<span class="material-symbols-outlined done">done</span>';
+              cell4.style.cursor = "pointer";
+              cell4.style.color = "green";
+              cell4.addEventListener("click", function (event) {
+                  var clickedRow = event.target.closest('tr');
+                  var name = clickedRow.cells[0].textContent;
+                  var reason = clickedRow.cells[1].textContent;
+                  var dates = clickedRow.cells[2].textContent;
+                  approveLeave(name, reason, dates);
+                });
+              cell5.innerHTML = '<span class="material-symbols-outlined cancel">cancel</span>';
+              cell5.style.cursor = "pointer";
+              cell5.style.color = "red";
+              cell5.addEventListener("click", function (event) {
+                  var clickedRow = event.target.closest('tr');
+                  var name = clickedRow.cells[0].textContent;
+                  var reason = clickedRow.cells[1].textContent;
+                  var dates = clickedRow.cells[2].textContent;
+                  declineLeave(name, reason, dates);
+                });
+            	}
+            }
+          }
+        };
+       
+        xhttp1.open("GET", "http://localhost:8080/hr/getLeave?manager=Admin", true);
+        xhttp1.send();
+
+        var xhtp1 = new XMLHttpRequest();
+        xhtp1.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var data=this.responseText;
+            console.log("datta",JSON.parse(data));
+            data=JSON.parse(data);
+            var employeeTotals={};
+            processAttendanceData(data);
+function processAttendanceData(data) {
+    data.forEach(function (attendance) {
+        var totalHours = calculateTotalHours(attendance.checkin, attendance.checkout);
+
+        if (employeeTotals.hasOwnProperty(attendance.name)) {
+            
+            employeeTotals[attendance.name] = (parseFloat(employeeTotals[attendance.name]) + totalHours).toFixed(2);
+        } else {
+           
+            employeeTotals[attendance.name] = totalHours.toFixed(2);
+        }
+    });
+
+  window.localStorage.setItem('workinghours', JSON.stringify(employeeTotals));
+}
+
+function calculateTotalHours(checkin, checkout) {
+    var checkinParts = checkin.split(':');
+    var checkoutParts = checkout.split(':');
+
+    var checkinMinutes = parseInt(checkinParts[0], 10) * 60 + parseInt(checkinParts[1], 10);
+    var checkoutMinutes = parseInt(checkoutParts[0], 10) * 60 + parseInt(checkoutParts[1], 10);
+
+    var totalMinutes = checkoutMinutes - checkinMinutes;
+
+    var totalHours = totalMinutes / 60;
+
+    return totalHours;
+}
+         }
+        };
+        xhtp1.open("GET", "http://localhost:8080/hr/getattendance?manager=Admin", true);
+        xhtp1.send();
+        var ctx = document.getElementById('barChart').getContext('2d');
+        var employeeData=JSON.parse(window.localStorage.getItem('workinghours'));
+var barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: Object.keys(employeeData),
+        datasets: [{
+            label: 'Total Hours Worked',
+            data: Object.values(employeeData),
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+      });
+      function filterTable() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const tableBody = document
+          .getElementById("btable")
+          .getElementsByTagName("tbody")[0];
+        const rows = tableBody.getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+          const name = rows[i]
+            .getElementsByTagName("td")[1]
+            .textContent.toLowerCase();
+          if (name.includes(input)) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+   
+  </head>
+  <body>
+    <div class="container1">
+      <div class="nav">
+        <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+              width: 172px;
+              border:none;
+              font-size:20px;
+              background:none;
+              color:cadetblue;
+            "
+            class="btn4"
+            id="home"
+          >
+            Welcome Admin !
+          </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          onclick="Emp()"
+          class="btn1"
+        >
+          Employees
+        </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          class="btn2"
+          onclick="Pro()"
+        >
+          Projects
+        </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          class="btn3"
+          onclick="Msg()"
+        >
+          Messages
+        </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          class="btn3"
+          onclick="Req()"
+        >
+          Requests
+        </button>
+        <button
+        style="
+          font-weight: 400;
+          padding: 0;
+          width:120px;
+          line-height: 0px;
+          cursor: pointer;
+        "
+        class="btn4"
+        onclick="chart()"
+      >
+        Attendance
+      </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          class="btn4"
+          onclick="Logout()"
+        >
+          Logout
+        </button>
+      </div>
+      <div class="img">
+        <img class="simg" src="hr2.jpg" />
+      </div>
+    </div>
+    <div class="container2" id="container2" style="position: relative;">
+      <div class="logo" style="position: absolute;top: 10px;" >
+        <img src="em.jpg" alt="" style="width: 200px; height: 150px" />
+        <div class="search">
+          <input
+            oninput="filterTable()"
+            id="searchInput"
+            type="text"
+            placeholder="Search"
+            style="
+              outline: none;
+              border: none;
+              color:black;
+              background: transparent;
+              border-bottom: 1px solid black;
+            "
+          />
+          <span class="material-symbols-outlined"> saved_search </span>
+        </div>
+        <button style="height: 40px;width: 140px;border: none;border-radius: 20px;background-color: aquamarine;color: #0c1009;cursor: pointer;" onclick="handleAdd()">Add Employee</button>
+      </div>
+
+      <div class="EmployeesTable" style="width:70%;display:flex;align-items:center;margin-top:50px;">
+        <table  class="table" id="btable">
+          <thead >
+            <tr>
+              <th scope="col">Emp Id</th>
+              <th scope="col">Name</th>
+              <th scope="col">Role</th>
+              <th scope="col">Joining Date</th>
+              <th scope="col">Remove</th>
+            </tr>
+          </thead>
+          <tbody ></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="container3" id="container3">
+      <img class="pimg" src="assign.jpg" />
+      <div class="assign">
+        <h1>Assign Project</h1>
+        <div class="form-group">
+          <label for="ename">Employee Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ename"
+            aria-describedby="emailHelp"
+            placeholder="Enter Employee Name"
+          />
+          <div id="fromESuggestionsContainer" class="suggestions-container"></div>
+        </div>
+        <div class="form-group">
+          <label for="pname">Project Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="pname"
+            aria-describedby="emailHelp"
+            placeholder="Enter Project Name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="pdesc">Project Description</label>
+          <textarea
+            class="form-control"
+            id="pdesc"
+            rows="3"
+          ></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="handleProject()">Submit</button>
+      </div>
+    </div>
+    <div id="mContainer" class="messageContainer">
+      <div class="mimg">
+        
+        <img class="mesimg" src="msg.jpg">
+      </div>
+      <div class="inbox">
+        <button class="iview" id="iadd" style="height: 40px;cursor: pointer;width: 150px;outline:none;border: none;background-color: rgb(58, 212, 218);border-radius: 20px;color: white;font-size: 20px;position: absolute;top: 20px;right: 40px;" onclick="iview()">Inbox</button>
+        <button class="dnone" id="iback" style="height: 40px;cursor: pointer;width: 150px;outline:none;border: none;background-color: rgb(58, 212, 218);border-radius: 20px;color: white;font-size: 20px;position: absolute;top: 20px;right: 40px;" onclick="iback()">Back</button>
+        
+        <div class="Sendmessage" id="Sendmess">
+          
+          <div class="form-group">
+            <label for="fname">From</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fname"
+              aria-describedby="emailHelp"
+              placeholder="From"
+            />
+            <div id="fromMSuggestionsContainer" class="suggestions-container"></div>
+          </div>
+          <div class="form-group">
+            <label for="tname">To</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tname"
+              aria-describedby="emailHelp"
+              placeholder="To"
+            />
+            <div id="toMSuggestionsContainer" class="suggestions-container"></div>
+          </div>
+          <div class="form-group">
+            <label for="msg">Message</label>
+            <textarea
+            class="form-control"
+            id="msg"
+            rows="3"
+            placeholder="Enter Message ..."
+          ></textarea>
+          </div>
+        
+          <button type="button" class="btn btn-primary" onclick="handleMessage()">Send</button>
+        </div>
+        <div class="tcontainer">
+          <button class="dnone" id="clearinbox" style="color:white;background-color:#fa3c6f;outline:none;border:none;height: 40px;cursor: pointer;width: 100px;border-radius:20px;position:absolute;top:120px;right:150px" onclick="deletemessages()">Clear Inbox</button>
+          <p id="nomrec" class="dnone" style="color: brown;position: absolute;top: 350px;right: 400px;">No Records Found..!</p>
+          <div id="metable" class="Ltable dnone" style="margin-top:50px;;width:400px;height: 500px;">
+            <table style="color: #d2f953" class="table" id="messagetable">
+              <thead style="color: #0c1009">
+                <tr>
+                  <th scope="col">From</th>
+                 
+                  <th scope="col">Message</th>
+                </tr>
+              </thead>
+              <tbody style="color: #0c1009;">
+                
+              </tbody>
+            </table>
+          </div> 
+        </div>
+      </div>
+       
+      </div>
+    </div>
+    <div class="container4" id="container4">
+      <div class="limg">
+        <img class="sickimg" src="sick.jpg" />
+        <img class="sickimg" style="width: 400px" src="leave.jpg" />
+      </div>
+      <div class="Ltable" style="width: 70%; margin-top: 20px">
+        <table style="color: #d2f953" class="table" id="Leavetable">
+          <thead style="color: #0c1009">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Reason</th>
+              <th scope="col">Date</th>
+              <th scope="col">Approve</th>
+              <th scope="col">Decline</th>
+            </tr>
+          </thead>
+          <tbody style="color: #0c1009;">
+           
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chartContainer" id="cconatiner">
+      <div class="atchart"  style="width:70%;height: 70%;">
+        <canvas id="barChart" width="300" height="100"></canvas>
+      </div>
+    </div>
+    <script>
+      function chart(){
+        var e=document.getElementById("cconatiner");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      }
+      function handleAdd(){
+        window.location="/hr/register.html";
+      }
+    function showApiResultModal(message, isSuccess) {
+    	  if (isSuccess) {
+    	    Swal.fire({
+    	      title: 'Success',
+    	      text: message,
+    	      icon: 'success',
+    	    }).then(()=>window.location.reload());
+    	  } else {
+    	    Swal.fire({
+    	      title: 'Failure',
+    	      text: message,
+    	      icon: 'error',
+    	    });
+    	  }
+    	}
+    function deleteEmployee(empname){
+   	 Swal.fire({
+   		    title: 'Are you sure?',
+   		    text: 'You won\'t be able to undo this operation!',
+   		    icon: 'warning',
+   		    showCancelButton: true,
+   		    confirmButtonColor: '#d33',
+   		    cancelButtonColor: '#3085d6',
+   		    confirmButtonText: 'Yes, delete it!'
+   		  }).then((result) => {
+   		    
+   		    if (result.isConfirmed) {
+   		      deleteEmployeeApiCall(empname);
+   		    }
+   		  });
+   }
+      function deletemessages(){
+    	 Swal.fire({
+    		    title: 'Are you sure?',
+    		    text: 'You won\'t be able to recover all these messages!',
+    		    icon: 'warning',
+    		    showCancelButton: true,
+    		    confirmButtonColor: '#d33',
+    		    cancelButtonColor: '#3085d6',
+    		    confirmButtonText: 'Yes, delete it!'
+    		  }).then((result) => {
+    		    
+    		    if (result.isConfirmed) {
+    		      deleteMessageApiCall("Admin");
+    		    }
+    		  });
+    }
+    function deleteMessageApiCall(to) {
+    	  
+    	  console.log("deleting");
+    	  fetch('http://localhost:8080/hr/deletemessages?tname=' +to , {
+    	        method: 'DELETE',
+    	        headers: {
+    	            'Content-Type': 'application/json',
+    	        },
+    	    })
+    	    .then(response => response.json())
+    	    .then(data => {
+    	        if (data.message) {
+    	            showApiResultModal(data.message, true);
+    	        } else {
+    	            showApiResultModal('Failed to delete the message.', false);
+    	        }
+    	    })
+    	    .catch((error) => {
+    	        console.error('Error:', error);
+    	    });
+    
+    	}
+
+    function deleteEmployeeApiCall(employeeName) {
+        fetch(`http://localhost:8080/hr/deleteemployee?name=${employeeName}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    showApiResultModal('Employee deleted successfully', true);
+                } else if (data.status === "failed") {
+                    showApiResultModal('Failed to delete the employee.', false);
+                } else {
+                    showApiResultModal('Error occurred while deleting the employee.', false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function Logout(){
+    	window.location="/hr/login.html";
+    }
+      function Emp() {
+        var e = document.getElementById("container2");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function Pro() {
+        var e = document.getElementById("container3");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function Req() {
+        var e = document.getElementById("container4");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+       
+      }
+     
+    
+      function handleProject(){
+        var ename=document.getElementById("ename").value;
+        var pname=document.getElementById("pname").value;
+        var pdesc=document.getElementById("pdesc").value;
+        if(ename!=="" && pname!=="" && pdesc!==""){
+        	
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+        	  showApiResultModal("Project Assigned Successfully.", true);
+        	  
+          }
+          else{
+        	  showApiResultModal("Failed to submit. Please try again.", false);
+          }
+        };
+        xhttp.open("POST", "http://localhost:8080/hr/addProject?ename="+ename+"&pname="+pname+"&pdesc="+pdesc, true);
+        xhttp.send();
+        }else{
+        	showApiResultModal("Fill all fields..",false);
+        }
+
+      }
+      function handleMessage(){
+       
+       var fname = document.getElementById("fname").value;
+       var tname = document.getElementById("tname").value;
+       var msg = document.getElementById("msg").value; 
+       if(fname!=="" && tname!=="" && msg!==""){
+    	   
+       var xhttp = new XMLHttpRequest();
+       xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+        	 showApiResultModal("Message added Successfully!", true);
+         }
+         else{
+        	 showApiResultModal("Failed to submit. Please try again.", false);
+         }
+       };
+    xhttp.open("POST","http://localhost:8080/hr/addMessage?"+"fname="+fname+"&tname="+tname+"&msg="+msg,true);
+    
+   xhttp.send();
+       }else{
+    	   showApiResultModal("Fill all fields..",false);
+       }
+   
+         }
+        function handleLeave() {
+       var ename = document.getElementById("ename").value;
+       var reason = document.getElementById("reason").value;
+       var fdate = document.getElementById("fdate").value;
+       var tdate = document.getElementById("tdate").value; 
+       if(ename!=="" && reason!=="" && fdate!=="" && tdate!==""){
+    	   
+       var dates=fdate +" - "+ tdate;
+       var xhttp = new XMLHttpRequest();
+       xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+        	 showApiResultModal("Leave added Successfully!",true);
+         }
+         else{
+        	 showApiResultModal("Something went wrong..",false)
+         }
+       };
+    xhttp.open("POST","http://localhost:8080/hr/addLeave?"+"name="+ename+"&reason="+reason+"&dates="+dates,true);
+    
+   xhttp.send();
+       }
+       else{
+    	   showApiResultModal("Fill all field",false);
+       }
+   
+   }
+   function Msg() {
+        var e = document.getElementById("mContainer");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      
+    function iview(){
+document.getElementById("Sendmess").classList.add("dnone");
+document.getElementById("iadd").classList.add("dnone");
+document.getElementById("iback").classList.add("view");
+document.getElementById("iback").classList.remove("dnone");
+document.getElementById("metable").classList.remove("dnone");
+document.getElementById("iback").style.display="block";
+document.getElementById("clearinbox").style.display="block";
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function () {
+  if (this.readyState == 4 && this.status == 200) {
+    var Message= JSON.parse(this.responseText);
+    console.log(Message);
+    var tableBody = document
+      .getElementById("metable")
+      .getElementsByTagName("tbody")[0];
+    tableBody.innerHTML = "";
+    let mc=0;
+    for (var i = 0; i < Message.length; i++) {
+      var row = tableBody.insertRow(i);
+      mc+=1;
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+			              
+      cell1.textContent = Message[i].fromname;
+      cell2.textContent = Message[i].message;
+   
+
+    }
+    console.log("MC",mc);
+    if(mc==0){
+document.getElementById("nomrec").style.display="block";
+document.getElementById("clearinbox").style.display="none";
+
+    }else{
+document.getElementById("nomrec").style.display="none";
+document.getElementById("clearinbox").style.display="block";
+
+    }
+  }
+};
+var myname="Admin";
+xhttp.open("POST", "http://localhost:8080/hr/getmessages?tname="+myname, true);
+xhttp.send();
+    }
+    function iback(){
+document.getElementById("Sendmess").classList.remove("dnone");
+
+document.getElementById("iadd").classList.remove("dnone");
+document.getElementById("iadd").classList.add("view");
+document.getElementById("iback").classList.add("dnone");
+document.getElementById("metable").classList.add("dnone");
+document.getElementById("iback").style.display="none";
+document.getElementById("clearinbox").style.display="none";
+document.getElementById("nomrec").style.display="none";
+    }   
+  
+    </script>
+
+    
+  </body>
+</html>

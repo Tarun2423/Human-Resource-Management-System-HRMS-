@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee-Home</title>
+    <link rel="stylesheet" href="Ehome.css">
+    <link rel="stylesheet" href="Home.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+         window.addEventListener("load", function () {
+          var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            window.localStorage.setItem("Employees", this.responseText);
+            
+          }
+        };
+        xhttp.open("GET", "http://localhost:8080/hr/getEmp", true);
+        xhttp.send();
+        	 var username=window.localStorage.getItem("user");
+           document.getElementById("home").textContent ="Welcome "+ username+" !";
+        	 function sendUpdate(projectName, updateText) {
+        		 var fname = username;
+        		    var tname = "Admin";
+        		    var msg = "Project name= " + projectName + "\nUpdate= " + updateText; 
+        		    console.log(msg);
+        		    var xhttp = new XMLHttpRequest();
+        		    xhttp.onreadystatechange = function() {
+        		      if (this.readyState == 4 && this.status == 200) {
+        		    	  showApiResultModal("Message added Successfully!",true);
+        		      }
+        		      else{
+        		    	  showApiResultModal("Something went wrong..!",false);
+        		      }
+        		    };
+        		 xhttp.open("POST","http://localhost:8080/hr/addMessage?"+"fname="+fname+"&tname="+tname+"&msg="+msg,true);
+        		 
+        		xhttp.send();
+        		   
+        		  };
+          
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+        	  console.log(this.responseText);
+            var Projects = JSON.parse(this.responseText);
+            console.log(Projects[0]);
+            var tableBody = document
+              .getElementById("ptable")
+              .getElementsByTagName("tbody")[0];
+              var username=window.localStorage.getItem("user");
+            tableBody.innerHTML = "";
+            for (var i = 0; i < Projects.length; i++) {
+              var row = tableBody.insertRow(i);
+              var cell1 = row.insertCell(0);
+              var cell2 = row.insertCell(1);
+              var cell3 = row.insertCell(2);
+             console.log(Projects);
+              if(Projects[i].toname.includes(username)){
+
+              cell1.textContent = Projects[i].pname.toUpperCase();
+              cell1.style.fontStyle="bold";
+              cell2.textContent = Projects[i].pdesc;
+              var a = document.createElement("textarea");
+              a.placeholder = "Enter your text here...";
+              a.style.padding = "5px";
+              var sendIcon = document.createElement("span");
+              sendIcon.className = "material-symbols-outlined";
+              sendIcon.textContent = "send";
+              sendIcon.style.marginLeft="15px";
+              sendIcon.style.cursor="pointer";
+              sendIcon.style.color="gray";
+              (function (projectName) {
+                  sendIcon.addEventListener("click", function () {
+                    var updateText = a.value; 
+                    if (updateText.trim() !== "") {
+                     
+                      sendUpdate(projectName, updateText);
+                    }
+                  });
+                })(Projects[i].pname);
+              cell3.style.display="flex";
+              cell3.style.alignItems="center";
+              cell3.appendChild(a);
+              cell3.appendChild(sendIcon);
+            }
+          }
+          }
+        };
+        
+        xhttp.open("POST", "http://localhost:8080/hr/getprojects?username="+username, true);
+        // var datas="prname="+name;
+        xhttp.send();
+
+
+
+        let getusername=window.localStorage.getItem("user");
+      var xdetails=new XMLHttpRequest();
+      xdetails.onreadystatechange=function(){
+        if(this.readyState==4 && this.status==200){
+        var data=JSON.parse(this.responseText);
+        console.log(data);
+        window.localStorage.setItem("email",data[0].email);
+        window.localStorage.setItem("joining",data[0].Joining);
+        window.localStorage.setItem("dob",data[0].dob);
+        window.localStorage.setItem("role",data[0].role);
+        window.localStorage.setItem("id",data[0].EmpId);
+        window.localStorage.setItem("mob",data[0].phoneno);
+        window.localStorage.setItem("manager",data[0].manager);
+        document.getElementById('nameInput').value = getusername;
+        document.getElementById('idInput').value = window.localStorage.getItem('id');
+        document.getElementById('emailInput').value = window.localStorage.getItem('email');
+        document.getElementById('dobInput').value = window.localStorage.getItem('dob');
+        document.getElementById('roleInput').value = window.localStorage.getItem('role');
+        document.getElementById('dojInput').value = window.localStorage.getItem('joining');
+        document.getElementById('mobileInput').value =window.localStorage.getItem('mob') ;
+        const managerName=window.localStorage.getItem('manager');
+        const EmployeesArray=JSON.parse(window.localStorage.getItem('Employees'));
+        const managerArray=EmployeesArray.filter((e)=>e.name==managerName);
+        console.log(managerArray);
+        document.getElementById('mnameInput').value = managerArray[0].name;
+        document.getElementById('midInput').value = managerArray[0].EmpId;
+        document.getElementById('memailInput').value = managerArray[0].email;
+        document.getElementById('mdobInput').value = managerArray[0].dob;
+        document.getElementById('mroleInput').value =managerArray[0].role;
+        document.getElementById('mdojInput').value = managerArray[0].Joining;
+        document.getElementById('mmobileInput').value =managerArray[0].phoneno;
+        
+      }
+    }
+
+      xdetails.open("GET","http://localhost:8080/hr/getEmployee?name="+getusername,true);
+      xdetails.send();
+      });
+
+         document.addEventListener('DOMContentLoaded', function () {
+ 
+          const currentUser=window.localStorage.getItem('user');
+          const checkInBtn = document.getElementById('check-in-btn');
+const checkOutBtn = document.getElementById('check-out-btn');
+const digitalTimerElem = document.getElementById('digital-timer');
+const digitalDate=document.getElementById('digital_date');
+digitalDate.textContent = new Date().toLocaleDateString();
+const userAttendanceData = JSON.parse(localStorage.getItem(`attendanceData_${currentUser}`)) || {};
+
+function updateDisplay() {
+ 
+  var table = document.getElementById('actable');
+  var tbody = document.getElementById('atable');
+  tbody.innerHTML = '';
+  for (let day = 0; day <= 6; day++) {
+    const dayName = getDayName(day);
+    const checkInTime = userAttendanceData[day]?.checkIn
+      ? formatTime(userAttendanceData[day].checkIn)
+      : 'Not checked in';
+    const checkOutTime = userAttendanceData[day]?.checkOut
+      ? formatTime(userAttendanceData[day].checkOut)
+      : 'Not checked out';
+    
+      var tbody = document.getElementById('atable');
+      var table = document.getElementById('actable');
+    var row = tbody.insertRow();
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    cell1.textContent = dayName;
+    cell2.textContent = checkInTime;
+    cell3.textContent = checkOutTime;
+    if (checkInTime == 'Not checked in') {
+      cell2.style.color = 'red';
+    } else if (checkOutTime == 'Not checked out') {
+      cell3.style.color = 'red';
+    } else {
+      cell2.style.color = 'green';
+      cell3.style.color = 'green';
+    }
+    tbody.append(row);
+  }
+}
+
+function formatTime(timestamp) {
+  const date = new Date(timestamp);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
+}
+
+function formatNumber(value) {
+  return value < 10 ? `0${value}` : value;
+}
+
+function getDayName(day) {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return daysOfWeek[day];
+}
+
+
+checkInBtn.addEventListener('click', function () {
+  const currentDay = getCurrentDay();
+
+  const startTime = new Date().getTime();
+
+  userAttendanceData[currentDay] = { checkIn: startTime, elapsedTime: 0 };
+
+  localStorage.setItem(`attendanceData_${currentUser}`, JSON.stringify(userAttendanceData));
+
+  updateDisplay();
+  updateTimerDisplay(currentDay);
+  checkOutBtn.classList.remove("d-none");
+  checkInBtn.classList.add("d-none");
+});
+
+checkOutBtn.addEventListener('click', function () {
+  const currentDay = getCurrentDay();
+  const currentTime = new Date().getTime();
+
+  userAttendanceData[currentDay] = { ...(userAttendanceData[currentDay] || {}), checkOut: currentTime };
+
+  clearInterval(userAttendanceData[currentDay].timerInterval);
+
+  localStorage.setItem(`attendanceData_${currentUser}`, JSON.stringify(userAttendanceData));
+  var chin=(formatTime(userAttendanceData[currentDay].checkIn));
+  var chout=(formatTime(userAttendanceData[currentDay].checkOut));
+  console.log(chin);
+  console.log(chout);
+  var man=window.localStorage.getItem("manager");
+  console.log(man);
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+           	 console.log("Attendance added Successfully!",true);
+            }
+          };
+       xhttp.open("POST","http://localhost:8080/hr/addattendance?"+"name="+currentUser+"&checkin="+chin+"&checkout="+chout+"&manager="+man,true);
+       
+      xhttp.send();
+  updateDisplay();
+
+  digitalTimerElem.textContent = '00:00:00';
+  checkOutBtn.classList.add("d-none");
+  checkInBtn.classList.remove("d-none");
+  window.location.reload();
+  
+});
+
+function updateTimerDisplay(currentDay) {
+  const timerInterval = setInterval(function () {
+    const startTime = userAttendanceData[currentDay].checkIn;
+    const currentTime = new Date().getTime();
+    const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+
+    const hours = Math.floor(elapsedTime / 3600);
+    const minutes = Math.floor((elapsedTime % 3600) / 60);
+    const seconds = elapsedTime % 60;
+
+    digitalTimerElem.textContent = `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)} Hrs`;
+  }, 1000);
+
+  userAttendanceData[currentDay].timerInterval = timerInterval;
+}
+
+updateDisplay();
+
+const currentDay = getCurrentDay();
+
+if(!userAttendanceData[currentDay]?.checkIn && !userAttendanceData[currentDay]?.checkOut){
+	  
+	  checkOutBtn.classList.add("d-none");
+	  checkInBtn.classList.remove("d-none");
+	}
+else if (userAttendanceData[currentDay]?.checkIn && !userAttendanceData[currentDay]?.checkOut) {
+  updateTimerDisplay(currentDay);
+  checkOutBtn.classList.remove("d-none");
+  checkInBtn.classList.add("d-none");
+}
+else if(userAttendanceData[currentDay]?.checkIn && userAttendanceData[currentDay]?.checkOut){
+  digitalTimerElem.textContent = "00:00:00";
+  checkOutBtn.classList.add("d-none");
+  checkInBtn.classList.remove("d-none");
+  checkInBtn.disabled=true;
+
+  
+}
+
+function getCurrentDay() {
+  return new Date().getDay();
+}
+const fromInput = document.getElementById('ename');
+    const fromSuggestionsContainer = document.getElementById('fromESuggestionsContainer');
+if(fromInput.value == ""){fromSuggestionsContainer.style.display = "none";}
+    fromInput.addEventListener('input', () => updateSuggestions(fromInput, fromESuggestionsContainer));
+
+const finput=document.getElementById('fname');
+const tinput=document.getElementById('tname');
+const fromMSuggestionsContainer = document.getElementById('fromMSuggestionsContainer');
+const fromTSuggestionsContainer = document.getElementById('toMSuggestionsContainer');
+if(finput.value==""){fromMSuggestionsContainer.style.display="none";}
+if(tinput.value==""){fromTSuggestionsContainer.style.display="none";}
+finput.addEventListener('input', () => updateSuggestions(finput, fromMSuggestionsContainer));
+tinput.addEventListener('input', () => updateSuggestions(tinput, fromTSuggestionsContainer));
+ function updateSuggestions(inputElement, suggestionsContainer) {
+      const inputValue = inputElement.value.toLowerCase();
+      suggestionsContainer.innerHTML = '';
+		var Employees=JSON.parse(window.localStorage.getItem("Employees"));
+		  if (inputValue === "") {
+		        suggestionsContainer.style.display = 'none';
+		        return;
+		    }
+      const filteredSuggestions = Employees.filter(e =>
+        e.name.toLowerCase().includes(inputValue)       
+      );      
+      filteredSuggestions.forEach(name => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('suggestion-item');
+        suggestionItem.textContent = name.name;
+        suggestionItem.addEventListener('click', () => {
+          inputElement.value = name.name;
+          suggestionsContainer.innerHTML = '';
+        });
+        suggestionsContainer.appendChild(suggestionItem);
+      });
+      suggestionsContainer.style.display = filteredSuggestions.length>0 ? 'block' : 'none';
+    }
+// for image displaying
+var xhr = new XMLHttpRequest();
+
+xhr.responseType = 'arraybuffer';
+
+xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+            var arrayBuffer = xhr.response;
+            if (arrayBuffer) {
+                var byteArray = new Uint8Array(arrayBuffer);
+                var imageUrl = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, byteArray));
+                document.getElementById("displayedImage").src = imageUrl;
+            } else {
+                console.error("Failed to retrieve image data");
+            }
+        } else {
+            console.error("Failed to retrieve image. Status: " + xhr.status);
+        }
+    }
+}; 
+xhr.open("GET", "http://localhost:8080/hr/getImage?name=" + currentUser, true);
+xhr.send();
+
+           function getUserIdentifier() {
+           var user=window.localStorage.getItem("user");
+           return user;
+           }
+         });
+
+         function filterTable() {
+             const input = document
+               .getElementById("searchInput")
+               .value.toLowerCase();
+             const tableBody = document
+               .getElementById("ptable")
+               .getElementsByTagName("tbody")[0];
+             const rows = tableBody.getElementsByTagName("tr");
+
+             for (let i = 0; i < rows.length; i++) {
+               const name = rows[i]
+                 .getElementsByTagName("td")[0]
+                 .textContent.toLowerCase();
+               if (name.includes(input)) {
+                 rows[i].style.display = "";
+               } else {
+                 rows[i].style.display = "none";
+               }
+             }
+           }
+    </script>
+</head>
+<body>
+    <div class="container1">
+        <div class="nav">
+          <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+              width: 222px;
+              border:none;
+              font-size:20px;
+              background:none;
+              color:cadetblue;
+            "
+            class="btn4"
+            id="home"
+          >
+            Home
+          </button>
+          <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+            "
+            class="btn2"
+            onclick="Pro()"
+          >
+            Projects
+          </button>
+          <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+            "
+            class="btn3"
+            onclick="Req()"
+          >
+            Requests
+          </button>
+          <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+            "
+            onclick="Msg()"
+            class="btn1"
+          >
+            Messages
+          </button>
+          <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          onclick="Att()"
+          class="btn1"
+        >
+          Attendance
+        </button>
+        <button
+          style="
+            font-weight: 400;
+            padding: 0;
+            line-height: 0px;
+            cursor: pointer;
+          "
+          onclick="profile()"
+          class="btn1"
+        >
+          Profile
+        </button>
+          <button
+            style="
+              font-weight: 400;
+              padding: 0;
+              line-height: 0px;
+              cursor: pointer;
+            "
+            class="btn4"
+            onclick="Logout()"
+          >
+            Logout
+          </button>
+        </div>
+        <div class="img">
+          <img class="simg" src="Employee.jpg" />
+        </div>
+      </div>
+      <div class="container2" id="container2">
+        <div class="logo">
+          <img src="project.jpg" alt="" style="width: 500px; height: 200px" />
+          <div class="search">
+            <input
+              oninput="filterTable()"
+              id="searchInput"
+              type="text"
+              placeholder="Search"
+              style="
+                outline: none;
+                border: none;
+                color:black;
+                background: transparent;
+                border-bottom: 1px solid black;
+              "
+            />
+            <span class="material-symbols-outlined"> saved_search </span>
+          </div>
+        </div>
+  
+        <div class="ProjectTable" style="margin-top:20px">
+          <table  class="table" id="ptable">
+            <thead >
+              <tr>
+                <th scope="col">Project Name</th>
+                <th scope="col">Project Description</th>
+                <th scope="col">Updates</th>
+              </tr>
+            </thead>
+            <tbody ></tbody>
+          </table>
+        </div>
+      </div>
+       <div class="Leavecontainer" id="Leavecontainer">
+        <button class="view" id="add" style="height: 44px;text-align: center;cursor: pointer;width: 130px;outline:none;border: none;background-color: cadetblue;border-radius: 20px;color: white;font-size: 18px;" onclick="view()">View Status</button>
+        <button class="dnone" id="back" style="height: 40px;cursor: pointer;width: 100px;outline:none;border: none;background-color: cadetblue;border-radius: 20px;color: white;font-size: 18px;" onclick="back()">Back</button>
+      <div class="req" id="addLeave">
+        <div class="assign">
+          <h1>Add Leave Request</h1>
+          <div class="form-group">
+            <label for="ename">Employee Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="ename"
+              aria-describedby="emailHelp"
+              placeholder="Enter Employee Name"
+            />
+            <div id="fromESuggestionsContainer" class="suggestions-container"></div>
+          </div>
+          <div class="form-group">
+            <label for="reason">Reason</label>
+            <input
+              type="text"
+              class="form-control"
+              id="reason"
+              aria-describedby="emailHelp"
+              placeholder="Enter Reason"
+            />
+          </div>
+          <div class="form-group">
+            <label for="date">From</label>
+            <input
+              class="form-control"
+              id="fdate"
+              type="date"
+            
+            >
+          </div>
+          <div class="form-group">
+            <label for="date">To</label>
+            <input
+              class="form-control"
+              id="tdate"
+              type="date"
+             
+            >
+          </div>
+          <button type="button" class="btn btn-primary" onclick="handleLeave()">Submit</button>
+        </div>
+      </div>
+      <div class="tcontainer">
+
+        <div id="letable" class="Ltable dnone" style="margin-top: 50px;;width:700px;height: 500px;">
+          <table style="color: #d2f953" class="table" id="Leavetable">
+            <thead style="color: #0c1009">
+              <tr>
+                <th scope="col">Reason</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody style="color: #0c1009;">
+              
+            </tbody>
+          </table>
+        </div> 
+      </div>
+    </div>
+    <div id="mContainer" class="messageContainer">
+      <div class="mimg">
+        
+        <img class="mesimg" src="msg.jpg">
+      </div>
+      <div class="inbox">
+        <button class="iview" id="iadd" style="padding:0;height: 40px;cursor: pointer;width: 110px;outline:none;border: none;background-color: rgb(58, 212, 218);border-radius: 20px;color: white;font-size: 20px;position: absolute;top: 20px;right: 40px;" onclick="iview()">Inbox</button>
+        <button class="dnone" id="iback" style="padding:0;height: 40px;cursor: pointer;width: 110px;outline:none;border: none;background-color: rgb(58, 212, 218);border-radius: 20px;color: white;font-size: 20px;position: absolute;top: 20px;right: 40px;" onclick="iback()">Back</button>
+        
+        <div class="Sendmessage" id="Sendmess">
+          
+          <div class="form-group">
+            <label for="fname">From</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fname"
+              aria-describedby="emailHelp"
+              placeholder="Enter Employee Name"
+            />
+            <div id="fromMSuggestionsContainer" class="suggestions-container"></div>
+          </div>
+          <div class="form-group">
+            <label for="tname">To</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tname"
+              aria-describedby="emailHelp"
+              placeholder="Enter name"
+            />
+            <div id="toMSuggestionsContainer" class="suggestions-container"></div>
+          </div>
+          <div class="form-group">
+            <label for="msg">Message</label>
+            <textarea
+            class="form-control"
+            id="msg"
+            rows="3"
+            placeholder="Enter Message ..."
+          ></textarea>
+          </div>
+        
+          <button type="button" class="btn btn-primary" onclick="handleMessage()">Send</button>
+        </div>
+        <div class="tcontainer">
+
+          <div id="metable" class="Ltable dnone" style="margin-top:50px;;width:400px;height: 500px;">
+          <button style="color:white;background-color:#fa3c6f;outline:none;border:none;height: 40px;cursor: pointer;width: 100px;border-radius:20px;position:absolute;top:120px;right:150px" onclick="deletemessages()">Clear Inbox</button>
+            <table style="color: #d2f953" class="table" id="messagetable">
+              <thead style="color: #0c1009">
+                <tr>
+                  <th scope="col">From</th>
+                 
+                  <th scope="col">Message</th>
+                </tr>
+              </thead>
+              <tbody style="color: #0c1009;">
+                
+              </tbody>
+            </table>
+          </div> 
+        </div>
+      </div>
+       
+      </div>
+    </div>
+<div class="profileContainer" id="profileContainer" style="position: relative;">
+  <button id="pman" style="height: 40px;width: 180px;border-radius: 20px;float: right;position:absolute;top: 10px;cursor: pointer;;right: 30px;color:white;background-color: #3fcbc6;border:none" onclick="manager()">View Manager Details</button>
+  <button class="dnone" id="pback" style="height: 40px;width:80px;border-radius: 20px;float: right;position:absolute;top: 20px;cursor: pointer;;right: 80px;color:white;background-color: #3fcbc6;border:none" onclick="mback()">Back</button>
+    <div class="pin" id="pin">
+        <div class="Pimg">
+            <img id="displayedImage"  alt="Displayed Image" src="" style="cursor: pointer;">
+            <form id="avatarForm" onsubmit="event.preventDefault(); handleFileSelect();" action="UpdateAvatar" method="post" enctype="multipart/form-data">
+              <input type="file" id="picfileInput" style="display: none;" />
+          </form>
+           
+        </div>
+        <div class="pout">
+            <div class="pdetails">
+                <div class="profileField">
+                    <label for="employeeId" class="label">Employee Id:</label>
+                    <input type="text" id="idInput" class="input" value="24" disabled>
+                </div>
+                <div class="profileField">
+                    <label for="nameInput" class="label">Name:</label>
+                    <input type="text" id="nameInput" class="input" value="Tarun" disabled>
+                </div>
+                <div class="profileField">
+                    <label for="emailInput" class="label">Email Id:</label>
+                    <input type="text" id="emailInput" class="input" value="Tarun@gmail.com" disabled>
+                </div>
+                <div class="profileField">
+                    <label for="dobInput" class="label">Date Of Birth:</label>
+                    <input type="text" id="dobInput" class="input" value="24-05-2002">
+                </div>
+                <div class="profileField">
+                    <label for="roleInput" class="label">Role:</label>
+                    <input type="text" id="roleInput" class="input" value="Developer">
+                </div>
+                <div class="profileField">
+                    <label for="dojInput" class="label">Date Of Joining:</label>
+                    <input type="text" id="dojInput" class="input" value="01-01-2023">
+                </div>
+                <div class="profileField">
+                    <label for="mobileInput" class="label">Mobile Number:</label>
+                    <input type="text" id="mobileInput" class="input" value="9360623104">
+                </div>
+            </div>
+            <button class="pbutton" onclick="updateProfile()">Save Changes</button>
+        </div>
+    </div>
+    <div class="pin dnone" id="pin1">
+      <div class="Pimg">
+          <img id="displayedMImage" alt="Displayed Image" src="">
+      </div>
+      <div class="pout">
+          <div class="pdetails">
+              <div class="profileField">
+                  <label for="employeeId" class="label">Employee Id:</label>
+                  <input type="text" id="midInput" class="input" value="24" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="nameInput" class="label">Name:</label>
+                  <input type="text" id="mnameInput" class="input" value="Tarun" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="emailInput" class="label">Email Id:</label>
+                  <input type="text" id="memailInput" class="input" value="Tarun@gmail.com" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="dobInput" class="label">Date Of Birth:</label>
+                  <input type="text" id="mdobInput" class="input" value="24-05-2002" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="roleInput" class="label">Role:</label>
+                  <input type="text" id="mroleInput" class="input" value="Developer" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="dojInput" class="label">Date Of Joining:</label>
+                  <input type="text" id="mdojInput" class="input" value="01-01-2023" disabled>
+              </div>
+              <div class="profileField">
+                  <label for="mobileInput" class="label">Mobile Number:</label>
+                  <input type="text" id="mmobileInput" class="input" value="9360623104" disabled>
+              </div>
+          </div>
+         
+      </div>
+  </div>
+</div>
+
+<div class="AttendanceContainer" id="AttCon" style="border: 2px solid rgb(144, 144, 251);position: relative;display: flex;align-items: center;justify-content:center;">
+  <img src="attendance.jpg" style="height: 260px;width: 300px;position: absolute;top: 15px;right: 30px;z-index: 100;">
+
+  <div class="ahead" style="position: absolute;top: 40px;display: flex;width:100%;flex-direction: column;align-items: center;justify-content: space-between;">
+ 
+   <h1 style="color: gray;font-weight: 400;">Attendance Tracking</h1>
+
+      
+
+      <div class="abuttons" style="display: flex;flex-direction: row;gap: 40px;">
+          <button id="check-in-btn" class="btn btn-primary" style="width: 90px;padding-bottom: 2px;padding-top: 0;">Check In</button>
+          <button id="check-out-btn" class="btn btn-danger d-none" style="width: 100px;padding-bottom: 2px;padding-top: 0;">Check Out</button>
+      </div>
+  </div>
+  <div style="position:absolute;display: flex;flex-direction: column;align-items: center;justify-content: center;top: 50px;left:50px;font-size:30px;color:black;letter-spacing:1.5px;width: 250px;height: 200px;background-color:rgb(246, 246, 246);border-radius: 5%;">
+  <div id="digital-timer" style="font-weight: 700;font-style:bold"></div>
+  <div id="digital_date" style="font-size: 15px;margin-top: 10px;"></div>
+  </div>
+  <table id="actable" class="table" style="width: 40%;margin-top: 150px;">
+      <thead>
+          <tr>
+              <th>Day</th>
+              <th>Check-in Time</th>
+              <th>Check-out Time</th>
+          </tr>
+      </thead>
+      <tbody id="atable"></tbody>
+  </table>
+</div>
+    <script>
+      document.getElementById("displayedImage").addEventListener("click", chooseImage);
+
+document.getElementById("picfileInput").addEventListener("change", handleFileSelect);
+
+function chooseImage() {
+    document.getElementById("picfileInput").click();
+}
+function handleFileSelect(event) {
+    var file = event.target.files[0];
+    console.log(file);
+    if (file) {
+        updateServerWithNewImage(file);
+    }
+}
+
+
+function updateServerWithNewImage(file) {
+  console.log(file)
+    var formData = new FormData();
+    formData.append('file', file);
+    var currentUSer=window.localStorage.getItem('user');
+    formData.append('name', currentUSer);
+
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200 && this.responseText.trim() == "success") {
+              window.location.reload();
+               
+            } else if (this.status == 200 && this.responseText.trim() == "some error") {
+                console.log(error);
+            }
+        }
+    };
+
+    xhttp.open("POST", "http://localhost:8080/hr/updateimage", true); 
+    xhttp.send(formData);
+}
+
+      function mback(){
+        document.getElementById("pin1").classList.add("dnone");
+	document.getElementById("pin").classList.remove("dnone");
+	document.getElementById("pman").classList.remove("dnone");
+	document.getElementById("pback").classList.add("dnone");
+      }
+function manager(){
+	document.getElementById("pin1").classList.remove("dnone");
+	document.getElementById("pin").classList.add("dnone");
+	document.getElementById("pman").classList.add("dnone");
+	document.getElementById("pback").classList.remove("dnone");
+	var xhr1 = new XMLHttpRequest();
+
+	xhr1.responseType = 'arraybuffer';
+
+	xhr1.onreadystatechange = function() {
+	    if (xhr1.readyState == 4) {
+	        if (xhr1.status == 200) {
+	            var arrayBuffer = xhr1.response;
+	            if (arrayBuffer) {
+	                var byteArray = new Uint8Array(arrayBuffer);
+	                var imageUrl = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, byteArray));
+	                document.getElementById("displayedMImage").src = imageUrl;
+	            } else {
+	                console.error("Failed to retrieve image data");
+	            }
+	        } else {
+	            console.error("Failed to retrieve image. Status: " + xhr1.status);
+	        }
+	    }
+	}; 
+	xhr1.open("GET", "http://localhost:8080/hr/getImage?name=" + window.localStorage.getItem("manager"), true);
+	xhr1.send();
+}
+function updateProfile() {
+    // Retrieve data from input fields or other sources
+    const dob = document.getElementById('dobInput').value.trim();
+    const role = document.getElementById('roleInput').value.trim();
+    const phone = document.getElementById('mobileInput').value.trim();
+    const joining = document.getElementById('dojInput').value.trim();
+    const name = document.getElementById('nameInput').value.trim();
+   
+        	 
+           fetch('http://localhost:8080/hr/updateEmployee', {
+             method: 'POST',
+             headers: {
+               'Content-Type': 'application/x-www-form-urlencoded',
+             },
+             body: `name=${name}&role=${role}&dob=${dob}&phone=${phone}&joining=${joining}`,
+           })
+             .then(response => response.json())
+             .then(data => {
+              
+               if (data.message) {
+                 showApiResultModal(data.message, true);
+                
+               } else {
+                 showApiResultModal(data.error || 'Failed to update Employee ', false);
+               }
+             })
+             .catch(error => {
+               console.error('Error:', error);
+               showApiResultModal('An error occurred while updating ', false);
+             });
+         }
+
+  
+
+    function showApiResultModal(message, isSuccess) {
+    	  if (isSuccess) {
+    	    Swal.fire({
+    	      title: 'Success',
+    	      text: message,
+    	      icon: 'success',
+    	    });
+    	  } else {
+    	    Swal.fire({
+    	      title: 'Failure',
+    	      text: message,
+    	      icon: 'error',
+    	    });
+    	  }
+    	}
+
+    function deletemessages(){
+    	 Swal.fire({
+    		    title: 'Are you sure?',
+    		    text: 'You won\'t be able to recover all these messages!',
+    		    icon: 'warning',
+    		    showCancelButton: true,
+    		    confirmButtonColor: '#d33',
+    		    cancelButtonColor: '#3085d6',
+    		    confirmButtonText: 'Yes, delete it!'
+    		  }).then((result) => {
+    		    
+    		    if (result.isConfirmed) {
+    		    	var username=window.localStorage.getItem("user");
+    		      deleteMessageApiCall(username);
+    		    }
+    		  });
+    }
+    function deleteMessageApiCall(to) {
+    	  
+    	  console.log("deleting");
+    	  fetch('http://localhost:8080/hr/deletemessages?tname=' +to , {
+    	        method: 'DELETE',
+    	        headers: {
+    	            'Content-Type': 'application/json',
+    	        },
+    	    })
+    	    .then(response => response.json())
+    	    .then(data => {
+    	        if (data.message) {
+    	            showApiResultModal(data.message, true);
+    	        } else {
+    	            showApiResultModal('Failed to delete the message.', false);
+    	        }
+    	    })
+    	    .catch((error) => {
+    	        console.error('Error:', error);
+    	    });
+    
+    	}
+    function Att(){
+      var e=document.getElementById("AttCon");
+      e.scrollIntoView({behavior:"smooth",block:"start"})
+    }
+      function handleMessage(){
+       
+    var fname = document.getElementById("fname").value;
+    var tname = document.getElementById("tname").value;
+    var msg = document.getElementById("msg").value; 
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+    	  showApiResultModal("Message added Successfully!",true);
+      }
+      else{
+    	  showApiResultModal("Something went wrong..!",false);
+      }
+    };
+ xhttp.open("POST","http://localhost:8080/hr/addMessage?"+"fname="+fname+"&tname="+tname+"&msg="+msg,true);
+ 
+xhttp.send();
+
+      }
+      function handleLeave() {
+          var ename = document.getElementById("ename").value;
+          var reason = document.getElementById("reason").value;
+          var fdate = document.getElementById("fdate").value;
+          var tdate = document.getElementById("tdate").value; 
+          var man=window.localStorage.getItem("manager");
+          console.log(man);
+          if(ename!=="" && reason!=="" && fdate!=="" && tdate!==""){
+       	   
+          var dates=fdate +" - "+ tdate;
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+           	 showApiResultModal("Leave added Successfully!",true);
+            }
+            else{
+           	 showApiResultModal("Something went wrong..",false)
+            }
+          };
+       xhttp.open("POST","http://localhost:8080/hr/addLeave?"+"name="+ename+"&reason="+reason+"&dates="+dates+"&manager="+man,true);
+       
+      xhttp.send();
+          }
+          else{
+       	   showApiResultModal("Fill all field",false);
+          }
+      
+      }
+
+    function view(){
+document.getElementById("addLeave").classList.add("dnone");
+document.getElementById("add").classList.add("dnone");
+document.getElementById("back").classList.add("view");
+document.getElementById("back").classList.remove("dnone");
+document.getElementById("letable").classList.remove("dnone");
+document.getElementById("back").style.display="block";
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function () {
+  if (this.readyState == 4 && this.status == 200) {
+    var Leave= JSON.parse(this.responseText);
+    console.log(Leave);
+    var tableBody = document
+      .getElementById("Leavetable")
+      .getElementsByTagName("tbody")[0];
+    tableBody.innerHTML = "";
+    var name=window.localStorage.getItem("user");
+    var s=0;
+    for (var i = 0; i < Leave.length; i++) {
+    	  console.log(name);
+  		if(name && Leave[i].name===name){	       
+    	var row = tableBody.insertRow(s);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+     
+           s+=1;
+      cell1.textContent = Leave[i].reason;
+      cell2.textContent = Leave[i].dates;
+      cell3.textContent = Leave[i].status==null?"Waiting for Approval":Leave[i].status;
+      if(Leave[i].status=="Approved"){
+        cell3.style.color="green";
+      }
+      else if(Leave[i].status=="Declined"){
+        cell3.style.color="red";
+      }
+      else{
+        cell3.style.color="blue";
+      }
+		}
+
+    }
+  }
+};
+xhttp.open("GET", "http://localhost:8080/hr/geteLeave?name="+window.localStorage.getItem('user'), true);
+xhttp.send();
+    }
+    function back(){
+document.getElementById("addLeave").classList.remove("dnone");
+
+document.getElementById("add").classList.remove("dnone");
+document.getElementById("add").classList.add("view");
+document.getElementById("back").classList.add("dnone");
+document.getElementById("letable").classList.add("dnone");
+document.getElementById("back").style.display="none";
+    }
+    function Logout(){
+    	window.location="/hr/login.html";
+    }
+    function profile(){
+      var e=document.getElementById("profileContainer");
+      e.scrollIntoView({behavior:"smooth",block:"start"})
+    }
+      function Emp() {
+        var e = document.getElementById("container2");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function Pro() {
+        var e = document.getElementById("container2");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function Req() {
+        var e = document.getElementById("Leavecontainer");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      }
+      function Msg() {
+        var e = document.getElementById("mContainer");
+        e.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      
+    function iview(){
+document.getElementById("Sendmess").classList.add("dnone");
+document.getElementById("iadd").classList.add("dnone");
+document.getElementById("iback").classList.add("view");
+document.getElementById("iback").classList.remove("dnone");
+document.getElementById("metable").classList.remove("dnone");
+document.getElementById("iback").style.display="block";
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function () {
+  if (this.readyState == 4 && this.status == 200) {
+    var Message= JSON.parse(this.responseText);
+    console.log(Message);
+    var tableBody = document
+      .getElementById("metable")
+      .getElementsByTagName("tbody")[0];
+    tableBody.innerHTML = "";
+    for (var i = 0; i < Message.length; i++) {
+      var row = tableBody.insertRow(i);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+			              
+      cell1.textContent = Message[i].fromname;
+      cell2.textContent = Message[i].message;
+      // cell3.textContent = "Waiting for Approval";
+
+    }
+  }
+};
+var myname=window.localStorage.getItem("user");
+xhttp.open("POST", "http://localhost:8080/hr/getmessages?tname="+myname, true);
+xhttp.send();
+    }
+    function iback(){
+document.getElementById("Sendmess").classList.remove("dnone");
+
+document.getElementById("iadd").classList.remove("dnone");
+document.getElementById("iadd").classList.add("view");
+document.getElementById("iback").classList.add("dnone");
+document.getElementById("metable").classList.add("dnone");
+document.getElementById("iback").style.display="none";
+    }
+    </script>
+</body>
+</html>

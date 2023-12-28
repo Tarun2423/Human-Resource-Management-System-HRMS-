@@ -1,0 +1,268 @@
+@charset "UTF-8";
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+     body::-webkit-scrollbar {
+        width: 5px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background-color: rgb(120, 218, 245);
+      } 
+      
+      ::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      } 
+}
+.suggestions-container {
+    display: none;
+    position: absolute;
+    width: 16.2%;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: #fff;
+  }
+
+  .suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+  }
+.container1{
+    height: 100vh;
+    width: 100vi;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  
+}
+.container2{
+    margin-top: 20px;
+    height: 100vh;
+    width: 100vi;
+    gap:40px;
+    border-top:2px solid black ;
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  overflow-x: hidden;
+  
+}
+.table textarea{
+    border: 1px solid rgb(64, 0, 0);
+    outline: none;
+    width: 200px;
+}
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.container3{
+    margin-top: 1px;
+    height: 100vh;
+    width: 100vi;
+    /* background-color: rgb(249, 249, 248); */
+    border: 2px solid rgb(224, 246, 136);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 130px;
+  overflow-x: hidden;
+}
+.container4{
+    height: 100vh;
+    width: 100vi;
+    /* background-color: rgb(224, 246, 136); */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+
+  overflow-x: hidden;
+}
+.sickimg{
+    width: 300px;
+    height: 300px;
+}
+.limg{
+   flex:3;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    /* background-color: rgb(224, 246, 136); */
+}
+.Ltable{
+    flex: 3;
+}
+.img
+{
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    overflow-x: hidden;
+}
+.simg{
+	margin-top:60px;
+    width: 690px;
+    height: 450px;
+}
+.nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 60px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    /* z-index: 99; */
+}
+.search input{
+    width: 250px;
+    font-size: 17px;
+    color: #b028a5;
+}
+.search ::placeholder{
+    color: black;
+}
+.search span{
+    font-size: 25px;
+    cursor: pointer;
+    color: #b028a5;
+}
+.btn{
+    margin-top: 25px;
+    height: 35px;
+    font-weight: 700;   
+    width: 80px;
+    font-size: 15px;
+    padding: 1px;
+    border-radius: 10%;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+  
+}
+.btn1:focus,.btn2:focus,.btn3:focus,.btn4:focus{
+    outline: none;
+}
+.btn1{
+    padding: 1px;
+    text-align: center;
+    margin-top: 25px;
+    height: 38px;
+    font-weight: 400;
+    width: 110px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+
+.btn2{
+    padding: 1px;
+    margin-top: 25px;
+    height: 38px;
+    font-weight: 400;
+    width: 90px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+
+.btn3{
+    padding: 1px;
+    margin-top: 25px;
+    height: 35px;
+    font-weight: 400;
+    width: 105px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+.btn4{
+    padding: 1px;
+    margin-top: 25px;
+    height: 35px;
+    font-weight: 400;
+    width: 85px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);}
+
+.pimg{
+        width: 400px;
+        height: 300px;
+    }
+    
+.messageContainer{
+    height: 100vh;
+    width: 100vi;
+    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+  
+}
+.dnone{
+    display: none;
+}
+.mesimg{
+    flex:2;
+    width: 600px;
+    height: 300px;
+}
+.inbox{
+    flex: 3;
+    height: 80%;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+}
+.mbutton{
+    position: absolute;
+    top: 30px;
+    right: 40px;
+}
+.Sendmessage{
+    height: 90%;
+    width: 60%;
+}
+.chartContainer{
+    height: 100vh;
+    width: 100vi;
+    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+}

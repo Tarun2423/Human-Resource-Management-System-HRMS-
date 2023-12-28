@@ -1,0 +1,324 @@
+@charset "UTF-8";
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+     body::-webkit-scrollbar {
+        width: 5px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background-color: rgb(120, 218, 245);
+      } 
+      
+      ::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      } 
+}
+.container1{
+    height: 100vh;
+    width: 100vi;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+.nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 140px;
+    align-items: center;
+    z-index: 99;
+    width: 100%;
+  }
+.btn1:focus,.btn2:focus,.btn3:focus,.btn4:focus{
+    outline: none;
+}
+.btn1{
+    padding: 1px;
+    text-align: center;
+    margin-top: 25px;
+    height: 38px;
+    font-weight: 400;
+    width: 110px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+
+.btn2{
+    padding: 1px;
+    margin-top: 25px;
+    height: 38px;
+    font-weight: 400;
+    width: 90px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+
+.btn3{
+    padding: 1px;
+    margin-top: 25px;
+    height: 35px;
+    font-weight: 400;
+    width: 105px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);
+}
+.btn4{
+    padding: 1px;
+    margin-top: 25px;
+    height: 35px;
+    font-weight: 400;
+    width: 85px;
+    font-size: 15px;
+    border-radius: 20px;
+    border: 1px solid rgb(29, 125, 209);
+    color: white;
+    background-color: rgb(113, 206, 243);}
+    .img
+    {
+      
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        overflow-x: hidden;
+    }
+    .simg{
+        width: 900px;
+        height: 550px;
+    }
+    
+.container2{
+    margin-top: 20px;
+    height: 100vh;
+    width: 100vi;
+    border-top:2px solid black ;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  
+}
+.table textarea{
+    border: 1px solid rgb(64, 0, 0);
+    outline: none;
+    width: 200px;
+}
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.Ltable{
+    flex: 3;
+}
+
+.search{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    /* z-index: 99; */
+}
+.search input{
+    width: 250px;
+    font-size: 17px;
+    color: #b028a5;
+}
+.search ::placeholder{
+    color: black;
+}
+.search span{
+    font-size: 25px;
+    cursor: pointer;
+    color: #b028a5;
+}
+
+.pimg{
+    width: 400px;
+    height: 300px;
+}
+.ProjectTable{
+   
+    width: 80%;
+}
+
+.Leavecontainer{
+    height: 100vh;
+    width: 100vi;
+    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+  gap: 40px;
+  /* overflow-x: hidden; */
+}
+.view{
+    position: absolute;
+    top: 20px;
+    right: 40px;
+}
+.req{
+   width: 30%; 
+}
+
+/* .Ltable{
+    flex: 3;
+} */
+
+.dnone{
+    display: none;
+}
+
+.messageContainer{
+    height: 100vh;
+    width: 100vi;
+    position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+  
+}
+.mesimg{
+    flex:2;
+    width: 600px;
+    height: 300px;
+}
+.inbox{
+    flex: 3;
+    height: 80%;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+}
+.mbutton{
+    position: absolute;
+    top: 30px;
+    right: 40px;
+}
+.Sendmessage{
+    height: 90%;
+    width: 60%;
+}
+
+.AttendanceContainer{
+    width: 100vi;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+.profileContainer{
+    width: 100vi;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.pin {
+    display: flex;
+    width:90%;
+    height:80%;
+    gap:100px;
+    align-items:center;
+    justify-content:center;
+    border:2px solid rgb(235,238,239);
+    
+}
+
+.pin input{
+	margin-left:20px;
+}
+
+.Pimg {
+    margin-right: 20px;
+
+}
+.Pimg img{
+	    width:200px;
+    height:200px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+
+
+
+.Pimg {
+    margin-right: 20px;
+}
+
+.pout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pdetails {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profileField {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.label {
+    font-size: 18px;
+    color: gray;
+    font-weight: 700;
+    width: 150px; /* Fixed width for labels */
+}
+
+.input {
+    font-size: 17px;
+    padding: 5px;
+    width: 200px; /* Fixed width for input fields */
+}
+
+.pbutton {
+    background-color: #4CAF50;
+    color: white;
+  padding:10px;  
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+   background-color:#02abfd;
+  
+}

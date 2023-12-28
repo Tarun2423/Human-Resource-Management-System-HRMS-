@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracking</title>
+</head>
+<body>
+
+<div class="AttendanceContainer" id="AttCon" style="border: 2px solid rgb(144, 144, 251);position: relative;display: flex;align-items: center;justify-content: center;">
+    <div class="ahead" style="position: absolute;top: 20px;display: flex;flex-direction: column;align-items: center;justify-content: space-between;">
+        <h1>Attendance Tracking</h1>
+        <div class="abuttons" style="display: flex;flex-direction: row;gap: 40px;">
+            <button id="check-in-btn" class="btn btn-primary" style="width: 90px;padding-bottom: 2px;padding-top: 0;">Check In</button>
+            <button id="check-out-btn" class="btn btn-danger" style="width: 100px;padding-bottom: 2px;padding-top: 0;">Check Out</button>
+        </div>
+    </div>
+    <table id="actable" class="table" style="width: 60%;margin-top: 50px;">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Check-in Time</th>
+                <th>Check-out Time</th>
+            </tr>
+        </thead>
+        <tbody id="atable"></tbody>
+    </table>
+    <div id="digital-timer"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const checkInBtn = document.getElementById('check-in-btn');
+  const checkOutBtn = document.getElementById('check-out-btn');
+  const digitalTimerElem = document.getElementById('digital-timer');
+
+  const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+
+  function updateDisplay() {
+    var table = document.getElementById('actable');
+    var tbody = document.getElementById('atable');
+    tbody.innerHTML = '';
+    for (let day = 0; day <= 6; day++) {
+      const dayName = getDayName(day);
+      const checkInTime = attendanceData[day]?.checkIn
+        ? formatTime(attendanceData[day].checkIn)
+        : 'Not checked in';
+      const checkOutTime = attendanceData[day]?.checkOut
+        ? formatTime(attendanceData[day].checkOut)
+        : 'Not checked out';
+
+      var table = document.getElementById('actable');
+      var tbody = document.getElementById('atable');
+      var row = tbody.insertRow();
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+      cell1.textContent = dayName;
+      cell2.textContent = checkInTime;
+      cell3.textContent = checkOutTime;
+      if (checkInTime == 'Not checked in') {
+        cell2.style.color = 'red';
+      } else if (checkOutTime == 'Not checked out') {
+        cell3.style.color = 'red';
+      } else {
+        cell2.style.color = 'green';
+        cell3.style.color = 'green';
+      }
+      tbody.append(row);
+    }
+  }
+
+  function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
+  }
+
+  function formatNumber(value) {
+    return value < 10 ? `0${value}` : value;
+  }
+
+  function getDayName(day) {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return daysOfWeek[day];
+  }
+
+  checkInBtn.addEventListener('click', function () {
+    const currentDay = getCurrentDay();
+
+    if (attendanceData[currentDay]?.checkIn) {
+      alert('Check-in has already been recorded for today.');
+      return;
+    }
+
+    const startTime = new Date().getTime();
+
+    attendanceData[currentDay] = { checkIn: startTime, elapsedTime: 0 };
+
+    localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+
+    updateDisplay();
+
+    // Update the display with elapsed time immediately after checking in
+    updateTimerDisplay(currentDay);
+
+    checkInBtn.disabled = true;
+  });
+
+  checkOutBtn.addEventListener('click', function () {
+    const currentDay = getCurrentDay();
+    const currentTime = new Date().getTime();
+
+    attendanceData[currentDay] = { ...(attendanceData[currentDay] || {}), checkOut: currentTime };
+
+    // Clear the timer interval
+    clearInterval(attendanceData[currentDay].timerInterval);
+
+    localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+
+    updateDisplay();
+
+    digitalTimerElem.textContent = ''; // Clear the displayed timer
+
+    checkInBtn.disabled = false;
+  });
+
+  function getCurrentDay() {
+    return new Date().getDay();
+  }
+
+  function updateTimerDisplay(currentDay) {
+    const timerInterval = setInterval(function () {
+      const startTime = attendanceData[currentDay].checkIn;
+      const currentTime = new Date().getTime();
+      const elapsedTime = Math.floor((currentTime - startTime) / 1000) ;
+
+      const hours = Math.floor(elapsedTime / 3600);
+      const minutes = Math.floor((elapsedTime % 3600) / 60);
+      const seconds = elapsedTime % 60;
+
+      digitalTimerElem.textContent = `Time Elapsed: ${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
+    }, 1000);
+
+    attendanceData[currentDay].timerInterval = timerInterval;
+  }
+
+  // Initialize the display on page load
+  updateDisplay();
+
+  // Check if there is an active timer and update the display
+  const currentDay = getCurrentDay();
+  if (attendanceData[currentDay]?.checkIn && attendanceData[current]?.checkOut==null || attendData[current]?.checkOut==undefined) {
+    updateTimerDisplay(currentDay);
+    checkOutBtn.disabled = true;
+  }
+});
+</script>
+
+</body>
+</html>
